@@ -12,7 +12,15 @@ const readTmpl = () => {
 
 
 const buildFile = (tmpl, moduleRef) => {
-    return tmpl.replaceAll(":modulePath", moduleRef).replaceAll(":originalModulePath", moduleRef);
+    let originalModulePath = moduleRef
+    let modulePath = moduleRef
+
+    if (typeof moduleRef === 'object') {
+        modulePath = moduleRef.modulePath
+        originalModulePath = moduleRef.originalModulePath
+    }
+
+    return tmpl.replaceAll(":modulePath", modulePath).replaceAll(":originalModulePath", originalModulePath);
 }
 
 const createFilePathIfNotExists = (filePath) => {
@@ -28,11 +36,8 @@ async function main() {
 
     readableStream.on('data', (moduleRef) => {
         const file = buildFile(tmpl, moduleRef);
-        console.log(file);
         const filePath = path.join(distDir, moduleRef, 'index.html');
-        console.log(filePath);
         createFilePathIfNotExists(filePath)
-        // console.log(createFilePathIfNotExists(filePath))
         fs.writeFileSync(filePath, file, { encoding: 'utf-8', flag: 'w' });
     })
 }
