@@ -18,7 +18,7 @@ const buildFile = (tmpl, moduleRef) => {
 const createFilePathIfNotExists = (filePath) => {
     const fileDir = filePath.split('/').slice(0, -1).join('/');
     if (!fs.existsSync(fileDir)) {
-        fs.mkdirSync(fileDir);
+        fs.mkdirSync(fileDir, { recursive: true });
     }
 }
 
